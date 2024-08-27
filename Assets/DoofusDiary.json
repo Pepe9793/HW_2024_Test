@@ -1,14 +1,19 @@
 {
-  "speed": 5.0,
-  "pulpitTimeRange": {
-    "min": 10.0,
-    "max": 20.0
-  },
-  "pulpitSpawnInterval": 10.0,
-  "initialPulpitPosition": {
-    "x": 0,
-    "y": 0,
-    "z": 0
-  },
-  "pulpitSize": 9.0
+
+   "player_data" : {
+
+     "speed" : 3
+
+   },
+
+   "pulpit_data" : {
+
+     "min_pulpit_destroy_time" : 4,
+
+     "max_pulpit_destroy_time" : 5,
+
+     "pulpit_spawn_time" : 2.5
+
+   }
+
 }

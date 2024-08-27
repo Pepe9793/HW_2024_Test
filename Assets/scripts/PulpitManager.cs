@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class PulpitSpawner : MonoBehaviour
 {
@@ -9,13 +10,13 @@ public class PulpitSpawner : MonoBehaviour
     public TextMesh timerText;
 
     private float scaleDuration = 0.1f;
-    private Vector3 scaleUpSize = new Vector3(9, 0.4f, 9);
+    private Vector3 scaleUpSize = new(9, 0.4f, 9);
 
-    private List<GameObject> activePulpits = new List<GameObject>();
+    private List<GameObject> activePulpits = new();
 
-    private float minPulpitTime = 3.0f;
-    private float maxPulpitTime = 6.0f;
-    private float timeBeforeNewSpawn = 2.0f; 
+    private float minPulpitTime;
+    private float maxPulpitTime;
+    private float spawnDelay;
 
     private int lastSpawnIndex = -1;
     private Dictionary<int, List<int>> adjacencyList;
@@ -24,6 +25,7 @@ public class PulpitSpawner : MonoBehaviour
 
     void Start()
     {
+        LoadPulpitData();
         InitializeAdjacencyList();
         StartCoroutine(SpawnPulpit());
     }
@@ -47,6 +49,25 @@ public class PulpitSpawner : MonoBehaviour
         };
     }
 
+    void LoadPulpitData()
+    {
+        string filePath = Application.dataPath + "/DoofusDiary.json";
+
+        if (File.Exists(filePath))
+        {
+            string json = File.ReadAllText(filePath);
+            PulpitData pulpitData = JsonUtility.FromJson<PulpitData>(json);
+
+            minPulpitTime = pulpitData.pulpit_data.min_pulpit_destroy_time;
+            maxPulpitTime = pulpitData.pulpit_data.max_pulpit_destroy_time;
+            spawnDelay = pulpitData.pulpit_data.pulpit_spawn_time;
+        }
+        else
+        {
+            Debug.LogError("The file is missing!");
+        }
+    }
+
     IEnumerator SpawnPulpit()
     {
         while (true)
@@ -63,14 +84,13 @@ public class PulpitSpawner : MonoBehaviour
                 float pulpitLifetime = Random.Range(minPulpitTime, maxPulpitTime);
 
                 StartCoroutine(ScalePulpit(newPulpit.transform, scaleUpSize, scaleDuration));
-                //StartCoroutine(UpdateTimer(newPulpit, pulpitLifetime));
+                StartCoroutine(UpdateTimer(newPulpit, pulpitLifetime));
                 StartCoroutine(HandlePulpitDestruction(newPulpit, pulpitLifetime));
 
                 lastSpawnIndex = spawnIndex;
             }
 
-            // Wait for the timeBeforeNewSpawn to ensure a delay before a new pulpit appears
-            yield return new WaitForSeconds(timeBeforeNewSpawn);
+            yield return new WaitForSeconds(spawnDelay);
         }
     }
 
@@ -96,32 +116,32 @@ public class PulpitSpawner : MonoBehaviour
         }
     }
 
-    //IEnumerator UpdateTimer(GameObject pulpit, float duration)
-    //{
-    //    float remainingTime = duration;
-    //    TextMesh pulpitTextMesh = pulpit.GetComponentInChildren<TextMesh>();
+    IEnumerator UpdateTimer(GameObject pulpit, float duration)
+    {
+        float remainingTime = duration;
+        TextMesh pulpitTextMesh = pulpit.GetComponentInChildren<TextMesh>();
 
-    //    while (remainingTime > 0)
-    //    {
-    //        remainingTime -= Time.deltaTime;
+        while (remainingTime > 0)
+        {
+            remainingTime -= Time.deltaTime;
 
-    //        if (pulpitTextMesh != null)
-    //        {
-    //            pulpitTextMesh.text = "Time: " + remainingTime.ToString("F2") + "s";
-    //        }
-    //        else
-    //        {
-    //            yield break;
-    //        }
+            if (pulpitTextMesh != null)
+            {
+                pulpitTextMesh.text = "Time: " + remainingTime.ToString("F2") + "s";
+            }
+            else
+            {
+                yield break;
+            }
 
-    //        yield return null;
-    //    }
+            yield return null;
+        }
 
-    //    if (pulpitTextMesh != null)
-    //    {
-    //        pulpitTextMesh.text = "Time Left: 0.00s";
-    //    }
-    //}
+        if (pulpitTextMesh != null)
+        {
+            pulpitTextMesh.text = "Time Left: 0.00s";
+        }
+    }
 
     IEnumerator ScalePulpit(Transform pulpitTransform, Vector3 targetScale, float duration)
     {
@@ -144,4 +164,18 @@ public class PulpitSpawner : MonoBehaviour
             pulpitTransform.localScale = targetScale;
         }
     }
+}
+
+[System.Serializable]
+public class PulpitData
+{
+    public Pulpit pulpit_data;
+}
+
+[System.Serializable]
+public class Pulpit
+{
+    public float min_pulpit_destroy_time;
+    public float max_pulpit_destroy_time;
+    public float pulpit_spawn_time;
 }

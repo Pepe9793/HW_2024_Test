@@ -1,0 +1,14 @@
+{
+  "speed": 5.0,
+  "pulpitTimeRange": {
+    "min": 10.0,
+    "max": 20.0
+  },
+  "pulpitSpawnInterval": 10.0,
+  "initialPulpitPosition": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "pulpitSize": 9.0
+}

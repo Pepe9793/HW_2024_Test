@@ -1,12 +1,25 @@
 using UnityEngine;
 
-public class CameraFollow : MonoBehaviour
+public class SmoothCameraFollow : MonoBehaviour
 {
-    public Transform player;
-    public Vector3 offset;
+    #region Variables
 
-    void Update()
+    private Vector3 _offset;
+    [SerializeField] private Transform target;
+    [SerializeField] private float smoothTime;
+    private Vector3 _currentVelocity = Vector3.zero;
+
+    #endregion
+
+    #region Unity callbacks
+
+    private void Awake() => _offset = transform.position - target.position;
+
+    private void LateUpdate()
     {
-        transform.position = player.position + offset;
+        Vector3 targetPosition = target.position + _offset;
+        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref _currentVelocity, smoothTime);
     }
+
+    #endregion
 }

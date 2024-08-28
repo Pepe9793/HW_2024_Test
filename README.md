@@ -2,9 +2,6 @@
 
 game updated to v0.1
 
-For Playing Game download the Zip from release
-link- https://github.com/Pepe9793/HW_2024_Test/releases
-
 features:
 -new UI
 -improved materials 
@@ -19,6 +16,8 @@ screenshots
 -----------------------------------------------------------------------------------------------------------------
 
 level 3 done :
+
+For Playing Game download the Zip from release
 
 gameplay video - https://drive.google.com/drive/folders/1usFAGyNLr4ltfrUgD9JDH222ZcompOfM?usp=sharing
 

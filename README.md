@@ -3,6 +3,7 @@
 game updated to v0.1
 
 For Playing Game download the Zip from release
+link- https://github.com/Pepe9793/HW_2024_Test/releases
 
 features:
 -new UI

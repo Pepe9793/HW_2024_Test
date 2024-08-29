@@ -10,7 +10,7 @@ features:
 
 For Playing Game go to https://rohan9793.itch.io/doofus-adventure
 
-gameplay video - https://drive.google.com/drive/folders/1usFAGyNLr4ltfrUgD9JDH222ZcompOfM?usp=sharing
+gameplay video - https://youtu.be/5uWsF-yCvQY
 
 screenshots 
 

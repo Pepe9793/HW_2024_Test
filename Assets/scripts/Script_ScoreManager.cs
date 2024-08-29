@@ -5,17 +5,23 @@ using TMPro;
 public class ScoreManager : MonoBehaviour
 {
     [Header("UI Settings")]
-    public TextMeshProUGUI scoreText;  // Reference to the UI text component displaying the score
+    public TextMeshProUGUI scoreText;      // Reference to the TMP text component displaying the score
+    public TextMeshProUGUI highScoreText;  // Reference to the TMP text component displaying the high score
 
     private int score = 0; // Current score
+    private int highScore = 0; // High score
     private HashSet<string> processedPulpits = new(); // Set to track processed pulpits
 
     private const string ScoreKey = "currentScore"; // PlayerPrefs key for the score
+    private const string HighScoreKey = "highScore"; // PlayerPrefs key for the high score
+
 
     void Start()
     {
         InitializeScore();
+        InitializeHighScore();
         UpdateScoreUI();
+        UpdateHighScoreUI();
     }
 
     private void InitializeScore()
@@ -23,6 +29,12 @@ public class ScoreManager : MonoBehaviour
         // Initialize or reset the score from PlayerPrefs
         PlayerPrefs.SetInt(ScoreKey, 0);
         score = PlayerPrefs.GetInt(ScoreKey, 0);
+    }
+
+    private void InitializeHighScore()
+    {
+        // Load the high score from PlayerPrefs
+        highScore = PlayerPrefs.GetInt(HighScoreKey, 0);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -77,7 +89,19 @@ public class ScoreManager : MonoBehaviour
             score = pulpitScore;
             UpdateScoreUI();
             SaveScore();
+
+            if (score > highScore)
+            {
+                UpdateHighScore();
+            }
         }
+    }
+
+    private void UpdateHighScore()
+    {
+        highScore = score;
+        UpdateHighScoreUI();
+        SaveHighScore();
     }
 
     private void SaveScore()
@@ -86,8 +110,19 @@ public class ScoreManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    private void SaveHighScore()
+    {
+        PlayerPrefs.SetInt(HighScoreKey, highScore);
+        PlayerPrefs.Save();
+    }
+
     private void UpdateScoreUI()
     {
         scoreText.text = score.ToString();  // Update the score display
+    }
+
+    private void UpdateHighScoreUI()
+    {
+        highScoreText.text = "High Score: " + highScore.ToString();  // Update the high score display
     }
 }

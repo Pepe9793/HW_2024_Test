@@ -8,12 +8,13 @@ public class PulpitSpawner : MonoBehaviour
     public GameObject PulpitPrefab; // Prefab 
     public Transform[] spawnPoints; // Array of possible spawn points for the platforms
 
-    // Json Values
+    [Header("Color Settings")]
+    public Color[] pulpitColors; // Array of possible colors for the platforms
 
     [Header("Timing Settings")]
-    [SerializeField] private float minPulpitTime = 4.0f; 
-    [SerializeField] private float maxPulpitTime = 5.0f; 
-    [SerializeField] private float spawnDelay = 2.5f; 
+    [SerializeField] private float minPulpitTime = 4.0f;
+    [SerializeField] private float maxPulpitTime = 5.0f;
+    [SerializeField] private float spawnDelay = 2.5f;
 
     private List<GameObject> currentPlatforms = new List<GameObject>(); // List to keep track of active platforms
     private int previousSpawnIndex = -1; // Index of the last spawned platform
@@ -32,7 +33,7 @@ public class PulpitSpawner : MonoBehaviour
     private void PlaceInitialPlatform(int index)
     {
         GameObject platform = CreatePlatform(index);
-        currentPlatforms.Add(platform); 
+        currentPlatforms.Add(platform);
         platformCounter++; // Increment the platform counter
         previousSpawnIndex = index; // Update the last spawned index
     }
@@ -49,8 +50,8 @@ public class PulpitSpawner : MonoBehaviour
             {
                 int nextSpawnIndex = DetermineNextSpawnIndex();
 
-                if (nextSpawnIndex != -1) 
-                {                
+                if (nextSpawnIndex != -1)
+                {
                     GameObject platform = CreatePlatform(nextSpawnIndex);
                     currentPlatforms.Add(platform);
                     platformCounter++; // Increment the platform counter
@@ -106,6 +107,14 @@ public class PulpitSpawner : MonoBehaviour
         // Instantiate the Pulpit prefab at the given spawn point
         GameObject platform = Instantiate(PulpitPrefab, spawnPoints[index].position, Quaternion.identity);
         platform.name = "platform" + platformCounter; // Set a unique name for the platform for scoring
+
+        // Assign a random color to the platform's material
+        Renderer renderer = platform.GetComponent<Renderer>();
+        if (renderer != null && pulpitColors.Length > 0)
+        {
+            renderer.material.color = pulpitColors[Random.Range(0, pulpitColors.Length)];
+        }
+
         // Start a coroutine to destroy the platform after its lifetime
         StartCoroutine(RemovePlatformAfterLifetime(platform));
         return platform;
